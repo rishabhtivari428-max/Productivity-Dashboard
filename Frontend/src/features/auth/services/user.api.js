@@ -1,4 +1,4 @@
-import axiosInstance from "../../../api/axiosInstance";
+import axiosInstance from '../api/axiosInstance.js'
 
 export async function loginUser(email, password) {
     const response = await axiosInstance.post("/api/auth/login", { email, password });
