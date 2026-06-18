@@ -1,4 +1,4 @@
-import axiosInstance from "./axiosInstance";
+import axiosInstance from "../../../api/axiosInstance";
 
 export async function createActivity(title) {
     const response = await axiosInstance.post("/api/activity/create", { title });
