@@ -1,18 +1,18 @@
-import axios from "axios"
+import axios from "axios";
 
 const axiosInstance = axios.create({
-    baseURL: "https://dashboard-1-ozpd.onrender.com",
+    baseURL: "https://productivity-dashboard-hp2x.onrender.com",
     withCredentials: true
-})
+});
 
 axiosInstance.interceptors.request.use((config) => {
-    const token = localStorage.getItem('token')
+    const token = localStorage.getItem('token');
     if (token) {
-        config.headers.Authorization = `Bearer ${token}`
+        config.headers.Authorization = `Bearer ${token}`;
     }
-    return config
+    return config;
 }, (error) => {
-    return Promise.reject(error)
-})
+    return Promise.reject(error);
+});
 
-export default axiosInstance
+export default axiosInstance;
