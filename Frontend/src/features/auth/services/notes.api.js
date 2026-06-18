@@ -1,4 +1,4 @@
-import axiosInstance from "../../../api/axiosInstance";
+import axiosInstance from "./axiosInstance";
 
 export async function createNotes(title, content) {
     const response = await axiosInstance.post("/api/notes/create", { title, content });
