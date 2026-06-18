@@ -1,7 +1,7 @@
 import notesInstance from "../api/notesInstance";
 
 export async function createNotes(title, content) {
-    const response = await notesInstance.post("/create", {
+    const response = await notesInstance.post("notes/create", {
         title,
         content
     })
@@ -9,19 +9,19 @@ export async function createNotes(title, content) {
 }
 
 export async function getNotes() {
-    const response = await notesInstance.get('/get')
+    const response = await notesInstance.get('notes/get')
     return response.data
 }
 
 export async function updateNotes(id, title, content) {
-    const response = await notesInstance.patch(`/update/${id}`, { title, content })
+    const response = await notesInstance.patch(`notes/update/${id}`, { title, content })
     return response.data
 }
 
 export async function deleteNotes(id) {
-    const response = await notesInstance.delete(`/delete/${id}`)
+    const response = await notesInstance.delete(`notes/delete/${id}`)
     return response.data
 }
 
 
-// http://localhost:3000/api/notes/delete/6a0750082d1f76e751b3a6a7
+

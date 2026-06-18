@@ -1,7 +1,7 @@
 import axios from "axios"
 
 const notesInstance = axios.create({
-    baseURL: "http://localhost:3000/api/notes",
+    baseURL: "https://dashboard-1-ozpd.onrender.com",
     withCredentials: true
 })
 
