@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const activityInstance = axios.create({
-    baseURL: "http://localhost:3000/api/activity",
+    baseURL: "https://dashboard-1-ozpd.onrender.com",
     withCredentials: true
 })
 
