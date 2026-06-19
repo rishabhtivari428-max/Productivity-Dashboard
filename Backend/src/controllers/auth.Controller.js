@@ -38,11 +38,12 @@ async function registerUser(req, res) {
             httpOnly: true,
             secure: true,
             sameSite: "none",
-            maxAge: 24 * 60 * 60 * 1000
+            maxAge: 3 * 24 * 60 * 60 * 1000 
         })
 
         res.status(200).json({
             message: "User registered successfully",
+            token, 
             user: {
                 username: user.username,
                 email: user.email
@@ -55,8 +56,6 @@ async function registerUser(req, res) {
             error: error.message
         })
     }
-
-
 }
 
 async function loginUser(req, res) {
@@ -94,11 +93,12 @@ async function loginUser(req, res) {
             httpOnly: true,
             secure: true,
             sameSite: "none",
-            maxAge: 24 * 60 * 60 * 1000
+            maxAge: 3 * 24 * 60 * 60 * 1000 
         })
 
         res.status(200).json({
             message: "User Logged in successfully",
+            token, 
             user: {
                 username: user.username,
                 email: user.email
@@ -141,7 +141,6 @@ async function getMe(req, res) {
         })
     }
 }
-
 
 module.exports = {
     registerUser,
