@@ -50,8 +50,8 @@ export function AuthProvider({ children }) {
                     console.log("Error fetching user:", err);
                 }
             }
-            fetchUser();
         }
+        fetchUser();
     }, []);
 
     return (
