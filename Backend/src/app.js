@@ -9,10 +9,15 @@ const app = express()
 
 app.use(express.json())
 app.use(cookieParser())
+
 app.use(cors({
     origin: ["http://localhost:5173", "https://productivitydashboardslash.netlify.app"],
-    credentials: true
+    credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization"],
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
 }))
+
+app.options('*', cors());
 
 app.use("/api/auth", authRouter)
 app.use("/api/notes", NotesRouter)
