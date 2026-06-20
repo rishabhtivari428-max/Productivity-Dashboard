@@ -2,7 +2,7 @@ const UserModel = require('../models/User.model')
 const jwt = require('jsonwebtoken')
 
 async function identifyUser(req, res, next) {
-    let token = null;
+    let token = req.cookies.token;
 
     if (req.headers.authorization && req.headers.authorization.startsWith("Bearer ")) {
         token = req.headers.authorization.split(" ")[1];

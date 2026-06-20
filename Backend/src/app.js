@@ -17,7 +17,7 @@ app.use(cors({
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
 }))
 
-app.options('*', cors());
+app.options(/.*/, cors());
 
 app.use("/api/auth", authRouter)
 app.use("/api/notes", NotesRouter)

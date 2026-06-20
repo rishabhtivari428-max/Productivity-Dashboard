@@ -13,6 +13,9 @@ export function AuthProvider({ children }) {
         setError(null)
         try {
             const response = await loginUser(email, password)
+            if (response.token) {
+                localStorage.setItem('token', response.token)
+            }
             setuser(response.user)
         } catch (error) {
             const errorMessage = error.response?.data?.message || "Error while logging in"
@@ -29,6 +32,9 @@ export function AuthProvider({ children }) {
         setError(null)
         try {
             const response = await registerUser(username, email, password)
+            if (response.token) {
+                localStorage.setItem('token', response.token)
+            }
             setuser(response.user)
         } catch (error) {
             const errorMessage = error.response?.data?.message || "Error while registering"
