@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const axiosInstance = axios.create({
-    baseURL: "https://productivity-dashboard-hp2x.onrender.com",
+    baseURL: "https://productivity-dashboard-2-sawi.onrender.com",
     withCredentials: true
 })
 
