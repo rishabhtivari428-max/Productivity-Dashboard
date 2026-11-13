@@ -4,6 +4,7 @@ const authRouter = require('../src/routes/auth.routes')
 const NotesRouter = require('../src/routes/notes.routes')
 const ActivityRouter = require('../src/routes/activity.routes')
 const cors = require('cors')
+const path = require('path')
 
 const app = express()
 
@@ -21,12 +22,14 @@ app.use(express.static(path.join(__dirname, '../client/build')));
 
 app.options(/.*/, cors());
 
+app.use(express.static(path.join(__dirname, '../client/dist')))
+
 app.use("/api/auth", authRouter)
 app.use("/api/notes", NotesRouter)
 app.use('/api/activity', ActivityRouter)
 
-app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, '../client/build', 'index.html'));
+app.get('/{*splat}', (req, res) => {
+    res.sendFile(path.resolve(__dirname, '../client/dist', 'index.html'));
 });
 
 module.exports = app

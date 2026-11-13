@@ -1,41 +1,31 @@
 const UserModel = require('../models/User.model')
 const jwt = require('jsonwebtoken')
 
-async function identifyUser(req, res, next) {
-    let token = req.cookies.token;
-
-    if (req.headers.authorization && req.headers.authorization.startsWith("Bearer ")) {
-        token = req.headers.authorization.split(" ")[1];
-    } 
-    else if (req.cookies && req.cookies.token) {
-        token = req.cookies.token;
-    }
-
-    if (!token) {
-        return res.status(401).json({
-            message: "Unauthorized access - No token provided"
-        })
-    };
-
+async function identifyUser(req, res, next){
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET)
-        if (!decoded) {
+        const token = req.cookies.accessToken
+
+        if(!token){
             return res.status(401).json({
-                message: "Invalid Token"
+                message: "Unauthorized access, no access token provided"
             })
         }
 
-        const user = await UserModel.findOne({ _id: decoded.id })
-        if (!user) {
+        const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)
+
+        const user = await UserModel.findById(decoded.userId)
+
+        if(!user){
             return res.status(401).json({
-                message: "Unauthorized access - User not found"
+                message: "Unauthorized access, user not found"
             })
         }
+
         req.user = user
         next()
     } catch (error) {
         return res.status(401).json({
-            message: "Invalid Token"
+            message: "Invalid or expired access token"
         })
     }
 }

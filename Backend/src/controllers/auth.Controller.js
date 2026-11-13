@@ -2,6 +2,18 @@ const express = require('express')
 const UserModel = require('../models/User.model')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const { generateAccessToken, generateRefreshToken } = require('../utils/generateToken')
+
+const useSecureCookies =
+  process.env.NODE_ENV === "production" ||
+  process.env.FRONTEND_URL?.startsWith("https://");
+
+const cookieOptions = {
+  httpOnly: true,
+  secure: useSecureCookies,
+  sameSite: useSecureCookies ? "none" : "lax",
+  maxAge: 3 * 24 * 60 * 60 * 1000,
+};
 
 async function registerUser(req, res) {
     try {
@@ -29,26 +41,30 @@ async function registerUser(req, res) {
             password: hashedPassword
         })
 
-        const token = jwt.sign({
-            id: user._id,
-            email: user.email
-        }, process.env.JWT_SECRET, { expiresIn: "3d" })
+        const accessToken = generateAccessToken(user._id)
+        const refreshToken = generateRefreshToken(user._id)
 
-        res.cookie("token", token, {
-            httpOnly: true,
-            secure: true,
-            sameSite: "none",
-            maxAge: 3 * 24 * 60 * 60 * 1000 
-        })
+        user.refreshToken = refreshToken;
+        await user.save();
 
-        res.status(200).json({
-            message: "User registered successfully",
-            token, 
-            user: {
-                username: user.username,
-                email: user.email
-            }
-        })
+        return res
+            .status(201)
+            .cookie('accessToken', accessToken, {
+                ...cookieOptions,
+                maxAge: 15 * 60 * 1000
+            })
+            .cookie('refreshToken', refreshToken, {
+                ...cookieOptions,
+                maxAge: 7 * 24 * 60 * 60 * 1000
+            })
+            .json({
+                message: "User registered successfully",
+                user:{
+                    id: user._id,
+                    username: user.username,
+                    email: user.email
+                }
+            })
     }
     catch (error) {
         res.status(500).json({
@@ -84,26 +100,29 @@ async function loginUser(req, res) {
             })
         }
 
-        const token = jwt.sign({
-            id: user._id,
-            email: user.email
-        }, process.env.JWT_SECRET, { expiresIn: "3d" })
+        const accessToken = generateAccessToken(user._id)
+        const refreshToken = generateRefreshToken(user._id)
 
-        res.cookie("token", token, {
-            httpOnly: true,
-            secure: true,
-            sameSite: "none",
-            maxAge: 3 * 24 * 60 * 60 * 1000 
-        })
+        user.refreshToken = refreshToken;
+        await user.save();
 
-        res.status(200).json({
-            message: "User Logged in successfully",
-            token, 
-            user: {
-                username: user.username,
-                email: user.email
-            }
-        })
+        return res
+            .status(200)
+            .cookie('accessToken', accessToken, {
+                ...cookieOptions,
+                maxAge: 15 * 60 * 1000
+            })
+            .cookie('refreshToken', refreshToken, {
+                ...cookieOptions,
+                maxAge: 7 * 24 * 60 * 60 * 1000
+            })
+            .json({
+                message: "User logged in successfully",
+                user: {
+                    id: user._id,
+                    emai: user.email
+                }
+            })
     }
     catch (error) {
         res.status(500).json({
@@ -142,8 +161,41 @@ async function getMe(req, res) {
     }
 }
 
+async function generateNewAccessToken(req, res) {
+    const refreshToken = req.cookies?.refreshToken
+
+    if(!refreshToken){
+        return res.status(401).json({
+            message: "Refresh token not found"
+        })
+    }
+
+    const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET)
+
+    const user = await UserModel.findById(decoded.userId)
+
+    if(!user){
+        return res.status(401).json({
+            message: "Invalid or revoked refresh token"
+        })
+    }
+
+    const newAccessToken = generateAccessToken(user._id)
+
+    return res.
+        status(200)
+        .cookie('accessToken', newAccessToken, {
+            ...cookieOptions,
+            maxAge: 15 * 60 * 1000
+        })
+        .json({
+            message: "Access Token generated successfully"
+        })
+}
+
 module.exports = {
     registerUser,
     loginUser,
-    getMe
+    getMe,
+    generateNewAccessToken
 }
