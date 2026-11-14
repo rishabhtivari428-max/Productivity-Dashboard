@@ -12,7 +12,12 @@ app.use(express.json())
 app.use(cookieParser())
 
 app.use(cors({
-    origin: ["http://localhost:5173", "https://productivity-dashboard-4.onrender.com", "http://localhost:8080"],
+    origin: [
+        process.env.FRONTEND_URL?.replace(/\/+$/, ""),
+        "http://localhost:5173",
+        "https://productivity-dashboard-4.onrender.com",
+        "http://localhost:8080"
+    ].filter(Boolean),
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
