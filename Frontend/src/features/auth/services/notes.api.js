@@ -1,21 +1,21 @@
-import axiosInstance from '../api/axiosInstance.js'
+import { axiosInstance } from '../api/axiosInstance.js'
 
 export async function createNotes(title, content) {
-    const response = await axiosInstance.post("/api/notes/create", { title, content });
+    const response = await axiosInstance.post("/notes/create", { title, content });
     return response.data;
 }
 
 export async function getNotes() {
-    const response = await axiosInstance.get('/api/notes/get');
+    const response = await axiosInstance.get('/notes/get');
     return response.data;
 }
 
 export async function updateNotes(id, title, content) {
-    const response = await axiosInstance.patch(`/api/notes/update/${id}`, { title, content });
+    const response = await axiosInstance.patch(`/notes/update/${id}`, { title, content });
     return response.data;
 }
 
 export async function deleteNotes(id) {
-    const response = await axiosInstance.delete(`/api/notes/delete/${id}`);
+    const response = await axiosInstance.delete(`/notes/delete/${id}`);
     return response.data;
 }

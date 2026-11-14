@@ -1,12 +1,11 @@
 import axios from 'axios'
 
-const API_ORIGIN = import.meta.env.VITE_API_URL || (import.meta.env.DEV
-    ? 'http://localhost:3000'
-    : 'https://productivity-dashboard-hp2x.onrender.com')
+export const API_ORIGIN = (import.meta.env.VITE_API_URL || 'https://productivity-dashboard-hp2x.onrender.com')
+    .replace(/\/+$/, '')
+export const API_BASE_URL = API_ORIGIN.endsWith('/api') ? API_ORIGIN : `${API_ORIGIN}/api`
 
-export const API_BASE_URL = `${API_ORIGIN.replace(/\/+$/, '')}/api/auth`
 
-const axiosInstance = axios.create({
+export const axiosInstance = axios.create({
     baseURL: API_BASE_URL,
     withCredentials: true
 })
@@ -20,5 +19,3 @@ const axiosInstance = axios.create({
 // }, (error) => {
 //     return Promise.reject(error)
 // })
-
-export default axiosInstance

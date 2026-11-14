@@ -2,7 +2,7 @@ import { API_BASE_URL } from '../api/axiosInstance'
 
 const GoogleAuthButton = () => (
     <a
-        href={`${API_BASE_URL}/google`}
+        href={`${API_BASE_URL}/auth/google`}
         className="flex w-full items-center justify-center gap-3 rounded-xl border border-zinc-700 bg-zinc-800/60 px-4 py-3 font-medium text-white transition-colors hover:border-zinc-500 hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-red-500/50"
     >
         <svg aria-hidden="true" viewBox="0 0 48 48" className="h-5 w-5">

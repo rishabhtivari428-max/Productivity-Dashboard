@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useAuth } from '../hooks/useAuth'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import GoogleAuthButton from '../components/GoogleAuthButton'
+import { navigateToFrontend } from '../utils/navigation'
 
 const Login = () => {
     const [email, setemail] = useState("")
@@ -18,7 +19,7 @@ const Login = () => {
         e.preventDefault()
         const user = await handleLogin(email, password)
         if (user) {
-            navigate('/dashboard')
+            navigateToFrontend('/dashboard', navigate)
         }
     }
 

@@ -1,16 +1,16 @@
-import axiosInstance from '../api/axiosInstance.js'
+import { axiosInstance } from '../api/axiosInstance.js'
 
 export async function createActivity(title) {
-    const response = await axiosInstance.post("/api/activity/create", { title });
+    const response = await axiosInstance.post("/activity/create", { title });
     return response.data;
 }
 
 export async function getActivity() {
-    const response = await axiosInstance.get("/api/activity/get");
+    const response = await axiosInstance.get("/activity/get");
     return response.data;
 }
 
 export async function deleteActivity(id) {
-    const response = await axiosInstance.delete(`/api/activity/delete/${id}`);
+    const response = await axiosInstance.delete(`/activity/delete/${id}`);
     return response.data;
 }
