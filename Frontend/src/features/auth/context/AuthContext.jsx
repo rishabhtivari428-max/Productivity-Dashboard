@@ -1,11 +1,10 @@
-import { createContext, useContext, useState, useEffect } from "react";
-import { loginUser, registerUser, getMe } from "../services/user.api";
-
-export const AuthContext = createContext()
+import { useState, useEffect } from "react";
+import { loginUser, registerUser, getMe, logoutUser } from "../services/user.api";
+import { AuthContext } from "./AuthContextValue";
 
 export function AuthProvider({ children }) {
     const [user, setuser] = useState(null)
-    const [loading, setloading] = useState(false)
+    const [loading, setloading] = useState(true)
     const [error, setError] = useState(null)
 
     const handleLogin = async (email, password) => {
@@ -13,14 +12,12 @@ export function AuthProvider({ children }) {
         setError(null)
         try {
             const response = await loginUser(email, password)
-            if (response.token) {
-                localStorage.setItem('token', response.token)
-            }
             setuser(response.user)
+            return response.user
         } catch (error) {
             const errorMessage = error.response?.data?.message || "Error while logging in"
             setError(errorMessage)
-            console.log("Error while loggin you in: ", error)
+            return null
         }
         finally {
             setloading(false)
@@ -32,16 +29,29 @@ export function AuthProvider({ children }) {
         setError(null)
         try {
             const response = await registerUser(username, email, password)
-            if (response.token) {
-                localStorage.setItem('token', response.token)
-            }
             setuser(response.user)
+            return response.user
         } catch (error) {
             const errorMessage = error.response?.data?.message || "Error while registering"
             setError(errorMessage)
-            console.log("Error while registering you: ", error)
+            return null
         }
         finally {
+            setloading(false)
+        }
+    }
+
+    const handleLogout = async () => {
+        setloading(true)
+        setError(null)
+        try {
+            await logoutUser()
+            setuser(null)
+        } catch (error) {
+            const errorMessage = error.response?.data?.message || "Error while logging out"
+            setError(errorMessage)
+            return false
+        } finally {
             setloading(false)
         }
     }
@@ -53,15 +63,17 @@ export function AuthProvider({ children }) {
                 setuser(response.user);
             } catch (err) {
                 if (err.response?.status !== 401) {
-                    console.log("Error fetching user:", err);
+                    setError(err.response?.data?.message || "Unable to load your account")
                 }
+            } finally {
+                setloading(false)
             }
         }
         fetchUser();
     }, []);
 
     return (
-        <AuthContext.Provider value={{ user, loading, error, handleLogin, handleRegister }}>
+        <AuthContext.Provider value={{ user, loading, error, handleLogin, handleRegister, handleLogout }}>
             {children}
         </AuthContext.Provider>
     )

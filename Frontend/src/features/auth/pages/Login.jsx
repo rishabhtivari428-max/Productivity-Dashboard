@@ -1,30 +1,25 @@
-import React from 'react'
 import { useState } from 'react'
 import { useAuth } from '../hooks/useAuth'
-import { useNavigate } from 'react-router'
+import { useNavigate, useSearchParams } from 'react-router-dom'
+import GoogleAuthButton from '../components/GoogleAuthButton'
 
 const Login = () => {
     const [email, setemail] = useState("")
     const [password, setpassword] = useState("")
     const { handleLogin, loading, error } = useAuth()
     const navigate = useNavigate()
+    const [searchParams] = useSearchParams()
+    const oauthError = searchParams.get('error')
+    const oauthErrorMessage = oauthError
+        ? "Google sign-in failed. Please try again or use your email and password."
+        : null
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        try {
-            await handleLogin(email, password)
+        const user = await handleLogin(email, password)
+        if (user) {
             navigate('/dashboard')
-        } catch (error) {
-            console.log("Error while loggin in: ", error)
         }
-    }
-
-    if (loading) {
-        return (
-            <main>
-                <h1>Loading...</h1>
-            </main>
-        )
     }
 
     return (
@@ -34,11 +29,17 @@ const Login = () => {
                     <h1 className="text-3xl font-bold text-white mb-2">Welcome Back</h1>
                     <p className="text-zinc-400 text-sm">Please enter your details to login</p>
                 </div>
-                {error && (
+                {(error || oauthErrorMessage) && (
                     <div className="bg-red-500/10 border border-red-500/50 text-red-400 px-4 py-3 rounded-lg text-sm mb-4">
-                        {error}
+                        {error || oauthErrorMessage}
                     </div>
                 )}
+                <GoogleAuthButton />
+                <div className="flex items-center gap-4 my-5 text-zinc-500 text-xs uppercase tracking-wider">
+                    <span className="h-px flex-1 bg-zinc-800" />
+                    or continue with email
+                    <span className="h-px flex-1 bg-zinc-800" />
+                </div>
                 <form onSubmit={handleSubmit} className="flex flex-col gap-5">
                     <div className="flex flex-col gap-2">
                         <label className="text-sm font-medium text-zinc-300 ml-1">E-Mail</label>
@@ -62,7 +63,9 @@ const Login = () => {
                             required
                         />
                     </div>
-                    <button type="submit" className="w-full mt-2 bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-4 rounded-xl shadow-[0_0_15px_rgba(220,38,38,0.3)] hover:shadow-[0_0_25px_rgba(220,38,38,0.5)] transition-all active:scale-[0.98]">Log In</button>
+                    <button type="submit" disabled={loading} className="w-full mt-2 bg-red-600 hover:bg-red-700 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold py-3 px-4 rounded-xl shadow-[0_0_15px_rgba(220,38,38,0.3)] hover:shadow-[0_0_25px_rgba(220,38,38,0.5)] transition-all active:scale-[0.98]">
+                        {loading ? 'Signing in...' : 'Log In'}
+                    </button>
                     <p className="text-center text-sm text-zinc-400 mt-2">
                         Don't have an account?{' '}
                         <button type="button" onClick={() => navigate('/register')} className="text-red-500 hover:text-red-400 font-medium transition-colors">

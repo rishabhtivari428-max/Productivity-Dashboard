@@ -1,4 +1,3 @@
-import React from 'react'
 import Login from './features/auth/pages/Login'
 import Register from './features/auth/pages/Register'
 import Welcome from './features/auth/pages/Welcome'
@@ -21,10 +20,10 @@ const App = () => {
         <Route path='/' element={<> <Welcome /> <Features /> </>} />
         <Route path='/login' element={<Login />} />
         <Route path='/register' element={<Register />} />
-        <Route path='/dashboard' element={<Dashboard />} />
-        <Route path='/notes' element={<NotesPage />} />
-        <Route path='/pomodoro' element={<PomoTimer />} />
-        <Route path='/activity' element={<ActivityPage />} />
+        <Route path='/dashboard' element={<ProtectedRoutes><Dashboard /></ProtectedRoutes>} />
+        <Route path='/notes' element={<ProtectedRoutes><NotesPage /></ProtectedRoutes>} />
+        <Route path='/pomodoro' element={<ProtectedRoutes><PomoTimer /></ProtectedRoutes>} />
+        <Route path='/activity' element={<ProtectedRoutes><ActivityPage /></ProtectedRoutes>} />
       </Routes>
       <Footer />
     </div>

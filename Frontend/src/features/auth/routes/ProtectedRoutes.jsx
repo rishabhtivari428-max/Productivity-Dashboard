@@ -1,4 +1,3 @@
-import React from 'react'
 import { useAuth } from '../hooks/useAuth'
 import { Navigate } from 'react-router-dom'
 
@@ -7,8 +6,8 @@ const ProtectedRoutes = ({ children }) => {
 
     if (loading) {
         return (
-            <div className='flex justify-center items-center h-[50vh]'>
-                <div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500'></div>
+            <div className='flex justify-center items-center min-h-[50vh]' role="status" aria-label="Loading account">
+                <div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-500'></div>
             </div>
         )
     }
